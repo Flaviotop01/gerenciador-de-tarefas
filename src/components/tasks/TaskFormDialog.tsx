@@ -39,15 +39,17 @@ export function TaskFormDialog({ children, task }: TaskFormDialogProps) {
 
   function handleSave() {
     if (!form.title.trim()) return
+    const projectId = form.projectId === 'none' ? '' : form.projectId
     st((prev) => {
       if (task) {
         return prev.map((t) =>
-          t.id === task.id ? { ...t, ...form, updatedAt: new Date().toISOString() } : t
+          t.id === task.id ? { ...t, ...form, projectId, updatedAt: new Date().toISOString() } : t
         )
       }
       const newTask: Task = {
         id: `t${Date.now()}`,
         ...form,
+        projectId,
         assignees: [],
         tags: [],
         comments: [],
@@ -131,7 +133,7 @@ export function TaskFormDialog({ children, task }: TaskFormDialogProps) {
                   <SelectValue placeholder="Selecionar..." />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Nenhum</SelectItem>
+                  <SelectItem value="none">Nenhum</SelectItem>
                   {projs.map((p) => (
                     <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
                   ))}
